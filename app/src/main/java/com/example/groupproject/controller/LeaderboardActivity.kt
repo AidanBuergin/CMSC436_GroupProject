@@ -18,9 +18,16 @@ class LeaderboardActivity : AppCompatActivity() {
         recycler.layoutManager = LinearLayoutManager(this)
 
         val repo = Repository.getInstance(this)
+
+
+        val currentUsername: String? = repo.user?.username ?: repo.local.getLoggedInUser()
+
         repo.getAllUsers { userList ->
+
             val sortedList = userList.sortedByDescending { it.longestRun }
-            recycler.adapter = LeaderboardAdapter(sortedList)
+
+
+            recycler.adapter = LeaderboardAdapter(sortedList, currentUsername)
         }
 
         val backButton = findViewById<Button>(R.id.backButton)

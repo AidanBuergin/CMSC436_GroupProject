@@ -16,6 +16,7 @@
         android:id="@+id/leaderboardRecycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/backButton" />
+        android:layout_below="@id/backButton"
+        android:layout_marginTop="8dp"/>
 
 </RelativeLayout>

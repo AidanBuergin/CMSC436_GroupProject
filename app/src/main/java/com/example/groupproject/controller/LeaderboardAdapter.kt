@@ -1,5 +1,6 @@
 package com.example.groupproject.controller
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +11,8 @@ import com.example.groupproject.model.Repository
 import com.example.groupproject.model.User
 
 class LeaderboardAdapter(
-    private val users: List<User>
+    private val users: List<User>,
+    private val currentUsername: String?
 ) : RecyclerView.Adapter<LeaderboardAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -29,8 +31,19 @@ class LeaderboardAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val user = users[position]
 
+
         holder.username.text = user.username
-        val distanceUnit = Repository.getInstance(holder.itemView.context).local.getDistanceUnit()
-        holder.distance.text = "${user.longestRun} ${distanceUnit}"
+
+
+        val distanceUnit =
+            Repository.getInstance(holder.itemView.context).local.getDistanceUnit()
+        holder.distance.text = String.format("%.2f %s", user.longestRun, distanceUnit)
+
+
+        if (user.username == currentUsername) {
+            holder.itemView.setBackgroundColor(Color.parseColor("#D0F0C0"))
+        } else {
+            holder.itemView.setBackgroundColor(Color.TRANSPARENT)
+        }
     }
 }
