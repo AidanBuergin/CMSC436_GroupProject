@@ -1,5 +1,9 @@
 package com.example.groupproject.model
 
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.FirebaseFirestore
+
 /**
  * This class handles all communication with the remote database (Firebase).
  * The current implementation contains placeholder logic.
@@ -12,36 +16,46 @@ package com.example.groupproject.model
  * 5.  Implement the 'getAllUsers' function to fetch leaderboard data.
  */
 class RemoteDatabase {
+    private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private val usersCollection = db.collection("users")
 
     fun login(username: String, password: String, callback: (User?) -> Unit) {
-        // Placeholder: Simulate a network call and successful login
-        // In the real implementation, you would query Firestore
-        if (username.isNotEmpty() && password.isNotEmpty()) {
-            // Simulate finding a user.
-            callback(User(username, password, 5.0))
-        } else {
-            callback(null)
-        }
+        usersCollection.document(username).get().addOnSuccessListener { doc ->
+            if(!doc.exists()){
+                callback(null)
+                return@addOnSuccessListener
+            }
+            val storedPassword = doc.getString("password")
+            val longestRun = doc.getDouble("longestRun") ?: 0.0
+            if(storedPassword == password){
+                callback(User(username,password,longestRun))
+            } else {
+                callback(null)
+            }
+        }.addOnFailureListener { callback(null) }
     }
 
     fun createAccount(user: User, callback: (Boolean) -> Unit) {
-        // Placeholder: Simulate creating an account
-        // In the real implementation, you would add a new document to Firestore
-        callback(true)
+        val userMap = mapOf("password" to user.password, "longestRun" to user.longestRun)
+        usersCollection.document(user.username).set(userMap).addOnSuccessListener { callback(true) }.addOnFailureListener { callback(false) }
     }
 
     fun updateLongestRun(username: String, newDistance: Double) {
-        // Placeholder: This would update a user's record in Firestore
+        usersCollection.document(username).update("longestRun", newDistance)
     }
 
     fun getAllUsers(callback: (List<User>) -> Unit) {
         // Placeholder: Return a dummy list for the leaderboard
-        // In the real implementation, you would query the 'users' collection
-        val dummyUsers = listOf(
-            User("runner1", "", 12.5),
-            User("fast_feet", "", 11.2),
-            User("marathoner", "", 10.8)
-        )
-        callback(dummyUsers)
+        usersCollection.orderBy("longestRun", Query.Direction.DESCENDING).get().addOnSuccessListener { querySnapshot ->
+            val list = mutableListOf<User>()
+            for(doc in querySnapshot.documents){
+                val username = doc.id
+                val password = doc.getString("password") ?: ""
+                val longestRun = doc.getDouble("longestRun") ?: 0.0
+
+                list.add(User(username, password, longestRun))
+            }
+            callback(list)
+        }.addOnFailureListener { callback(emptyList()) }
     }
 }
