@@ -37,7 +37,9 @@ class Repository constructor(context: Context) {
     }
 
     fun updateLongestRun(username: String, distance: Double) {
-        remote.updateLongestRun(username, distance)
+        if (distance > (user?.longestRun ?: 0.0)) {
+            remote.updateLongestRun(username, distance)
+        }
     }
 
     fun getAllUsers(callback: (List<User>) -> Unit) {
