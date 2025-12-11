@@ -55,7 +55,8 @@
             android:id="@+id/endRun"
             android:text="End Run"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp" />
 
         <fragment
             android:id="@+id/map"

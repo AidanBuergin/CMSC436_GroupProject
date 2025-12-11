@@ -18,7 +18,7 @@ class LeaderboardActivity : AppCompatActivity() {
         recycler.layoutManager = LinearLayoutManager(this)
 
         val repo = Repository.getInstance(this)
-
+        val distanceUnit = repo.local.getDistanceUnit()
 
         val currentUsername: String? = repo.user?.username ?: repo.local.getLoggedInUser()
 

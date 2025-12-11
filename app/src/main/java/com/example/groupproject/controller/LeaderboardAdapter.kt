@@ -37,7 +37,11 @@ class LeaderboardAdapter(
 
         val distanceUnit =
             Repository.getInstance(holder.itemView.context).local.getDistanceUnit()
-        holder.distance.text = String.format("%.2f %s", user.longestRun, distanceUnit)
+        if (distanceUnit == "miles") {
+            holder.distance.text = String.format("%.2f %s", user.longestRun, distanceUnit)
+        } else {
+            holder.distance.text = String.format("%.2f %s", user.longestRun * 1.609, distanceUnit)
+        }
 
 
         if (user.username == currentUsername) {

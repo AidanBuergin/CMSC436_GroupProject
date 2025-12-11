@@ -2,6 +2,7 @@ package com.example.groupproject.controller
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -26,6 +27,10 @@ class LoginActivity : AppCompatActivity() {
         val loginBtn = findViewById<Button>(R.id.loginButton)
         val createBtn = findViewById<Button>(R.id.createButton)
 
+        repo.local.getLoggedInUser()?.let {
+            userField.setText(it)
+        }
+
         loginBtn.setOnClickListener {
             val username = userField.text.toString()
             val password = passField.text.toString()
@@ -45,13 +50,8 @@ class LoginActivity : AppCompatActivity() {
                 password = passField.text.toString(),
                 longestRun = 0.0
             )
-            repo.createAccount(newUser) { success ->
-                if (success) {
-                    Toast.makeText(this, "Account created!", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(this, "Failed to create account", Toast.LENGTH_SHORT).show()
-                }
-            }
+            repo.createAccount(newUser) {success -> }
+            Toast.makeText(this, "Account created!", Toast.LENGTH_SHORT).show()
         }
     }
 }

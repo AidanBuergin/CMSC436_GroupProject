@@ -3,6 +3,8 @@ package com.example.groupproject.model
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.FirebaseFirestore
+import android.os.Handler
+import android.os.Looper
 
 /**
  * This class handles all communication with the remote database (Firebase).
