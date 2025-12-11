@@ -89,10 +89,16 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
             val username = repo.local.getLoggedInUser()
             if (username != null) {
-                repo.updateLongestRun(username, currentDistance)
+                val miles = if (distanceUnit == "miles") {
+                    currentDistance
+                } else {
+                    currentDistance / 1.609
+                }
+                repo.updateLongestRun(username, miles)
+
                 val user = repo.user
-                if (user != null && currentDistance > user.longestRun) {
-                    user.longestRun = currentDistance
+                if (user != null && miles > user.longestRun) {
+                    user.longestRun = miles
                 }
                 finish()
             } else {
